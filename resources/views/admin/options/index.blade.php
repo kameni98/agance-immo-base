@@ -1,12 +1,12 @@
 @extends('admin.base')
 
-@section('title', 'Liste des villes')
+@section('title', 'Liste des options')
 
 @section('content')
 
     <div class="d-flex justify-content-between align-items-center">
         <h1>@yield('title')</h1>
-        <a href="{{route('admin.cities.create')}}" class="btn btn-primary">
+        <a href="{{route('admin.options.create')}}" class="btn btn-primary">
             Ajouter
         </a>
     </div>
@@ -18,15 +18,15 @@
         </thead>
 
         <tbody>
-            @foreach($cities as $option)
+            @foreach($options as $option)
                 <tr>
                     <td>{{$option->name}}</td>
                     <td>
                         <div class="d-flex gap-2 w-100 justify-content-end">
-                            <a href="{{route('admin.cities.edit', ['option' => $option->id])}}" class="btn btn-warning">
+                            <a href="{{route('admin.options.edit', ['option' => $option->id])}}" class="btn btn-warning">
                                 edit
                             </a>
-                            <form class="form-delete" action="{{route('admin.cities.destroy', $option)}}" method="post">
+                            <form class="form-delete" action="{{route('admin.options.destroy', $option)}}" method="post">
                                 @csrf
                                 @method("DELETE")
                                 <input type="hidden" name="option" value="{{$option->name}}">
@@ -39,7 +39,7 @@
         </tbody>
     </table>
 
-    {{ $cities->links() }}
+    {{ $options->links() }}
 @endsection
 
 @section('js')

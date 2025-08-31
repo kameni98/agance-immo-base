@@ -24,13 +24,13 @@
                         <a class="nav-link @class(['nav-link', 'active' => str_starts_with($routeName,'home')])" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a @class(['nav-link', 'active' => str_starts_with($routeName,'cities.')]) href="{{route("admin.cities.index")}}">Villes</a>
+                        <a @class(['nav-link', 'active' => str_starts_with($routeName,'admin.cities.')]) href="{{route("admin.cities.index")}}">Villes</a>
                     </li>
                     <li class="nav-item">
-                        <a @class(['nav-link', 'active' => str_starts_with($routeName,'properties.')]) href="{{route('admin.properties.index')}}">Propriétés</a>
+                        <a @class(['nav-link', 'active' => str_starts_with($routeName,'admin.properties.')]) href="{{route('admin.properties.index')}}">Propriétés</a>
                     </li>
                     <li class="nav-item">
-                        <a @class(['nav-link', 'active' => str_starts_with($routeName,'properties.')]) href="{{route('admin.options.index')}}">Options</a>
+                        <a @class(['nav-link', 'active' => str_starts_with($routeName,'admin.options.')]) href="{{route('admin.options.index')}}">Options</a>
                     </li>
                     {{--<li class="nav-item">
                         <a @class(['nav-link', 'active' => str_starts_with($routeName,'tags.')]) href="{{route('tags.index')}}">Tags</a>
