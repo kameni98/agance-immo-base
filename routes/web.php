@@ -17,4 +17,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::resource('cities', \App\Http\Controllers\Admin\CitiesController::class)->except(['show']); //ici on spécifie qu'on veut toutes les methodes sauf la methode show
+    Route::resource('properties', \App\Http\Controllers\Admin\PropertiesController::class)->except(['show']); //ici on spécifie qu'on veut toutes les methodes sauf la methode show
+    Route::resource('options', \App\Http\Controllers\Admin\OptionsController::class)->except(['show']); //ici on spécifie qu'on veut toutes les methodes sauf la methode show
+});
+
+
+
+
 require __DIR__.'/auth.php';
