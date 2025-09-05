@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property int $id
@@ -48,6 +49,13 @@ class Property extends Model
         return $this->belongsTo(City::class);
     }
 
+    public function options():BelongsToMany{
+        return $this->belongsToMany(Option::class);
+    }
+
+    public function getSlug():string{
+        return \Str::slug($this->title);
+    }
     /*// In your Eloquent Model
     public function setSoldAttribute($value): void
     {

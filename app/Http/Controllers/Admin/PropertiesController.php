@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PropertyFormRequest;
 use App\Models\City;
+use App\Models\Option;
 use App\Models\Property;
 use Illuminate\Http\Request;
 
@@ -37,7 +38,8 @@ class PropertiesController extends Controller
         ]);
         return view('admin.properties.form',[
             'property' => $property,
-            'cities' => City::orderBy('name','asc')->get()
+            'cities' => City::orderBy('name','asc')->get(),
+            'options' => Option::orderBy('name','asc')->get()
         ]);
     }
 
@@ -47,6 +49,7 @@ class PropertiesController extends Controller
     public function store(PropertyFormRequest $request)
     {
         $property = Property::create($request->validated());
+        $property->options()->sync($request->validated('options'));
         return to_route('admin.properties.index')->with([
             'message' => 'La propriété <b>'.$property->title.'</b> a été ajouté avec success.',
             'type' => 'success'
@@ -68,7 +71,8 @@ class PropertiesController extends Controller
     {
         return view('admin.properties.form',[
             'property' => $property,
-            'cities' => City::orderBy('name','asc')->get()
+            'cities' => City::orderBy('name','asc')->get(),
+            'options' => Option::orderBy('name','asc')->get()
         ]);
     }
 
@@ -78,7 +82,7 @@ class PropertiesController extends Controller
     public function update(PropertyFormRequest $request, Property $property)
     {
         $property->update($request->validated());
-
+        $property->options()->sync($request->validated('options'));
         return to_route('admin.properties.index')->with([
             'message' => 'La propriété <b>'.$property->title.'</b> a été modifiée avec success.',
             'type' => 'success'

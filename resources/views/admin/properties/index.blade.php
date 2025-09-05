@@ -17,6 +17,7 @@
             <th>Surface</th>
             <th>Prix</th>
             <th>Ville</th>
+            <th>Options</th>
             <th @class('text-end')>Actions</th>
         </thead>
 
@@ -27,6 +28,11 @@
                     <td>{{$property->surface}}m²</td>
                     <td>{{number_format($property->price, thousands_separator: ' ')}}</td>
                     <td>{{$property->city->name}}</td>
+                    <td>
+                        @foreach($property->options as $option)
+                            <span class="badge text-bg-info">{{$option->name}}</span>
+                        @endforeach
+                    </td>
                     <td class="text-end">
                         <div class="d-flex gap-2 w-100 justify-content-end">
                             <a href="{{route('admin.properties.edit', ['property' => $property->id])}}" class="btn btn-warning">

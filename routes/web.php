@@ -3,8 +3,14 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::prefix('properties')->name('properties.')->group(function () {
+    Route::get('index', [\App\Http\Controllers\PropertiesController::class, 'index'])->name('index');
+    Route::get('/{slug}-{property}/show', [\App\Http\Controllers\PropertiesController::class, 'show'])->name('show')
+    ->where(['property' => '[0-9]+','slug' => '[a-z0-9-]+']);
+
 });
 
 Route::get('/dashboard', function () {
