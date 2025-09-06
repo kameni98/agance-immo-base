@@ -29,7 +29,7 @@ class PropertyFormRequest extends FormRequest
             'rooms' => ['required', 'numeric'],
             'bedrooms' => ['required', 'numeric'],
             'floor' => ['numeric'],
-            'city_id' => ['required','numeric'],
+            'city_id' => ['required','numeric','exists:options,id'],
             'address' => ['required','string','min:2'],
             'postal_code' => ['nullable','string','min:2'],
             'sold' => ['nullable','boolean:'],

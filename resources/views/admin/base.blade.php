@@ -37,6 +37,20 @@
                         <a @class(['nav-link', 'active' => str_starts_with($routeName,'tags.')]) href="{{route('tags.index')}}">Tags</a>
                     </li>--}}
                 </ul>
+                <div class="ms-auto">
+                    @auth
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <form action="{{route('logout')}}" method="post">
+                                    @csrf
+                                    <button type="input" class="nav-link">Se déconnecter</button>
+                                </form>
+                            </li>
+                        </ul>
+                    @else
+
+                    @endauth
+                </div>
             </div>
         </div>
     </nav>

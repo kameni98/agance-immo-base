@@ -10,7 +10,8 @@ Route::prefix('properties')->name('properties.')->group(function () {
     Route::get('index', [\App\Http\Controllers\PropertiesController::class, 'index'])->name('index');
     Route::get('/{slug}-{property}/show', [\App\Http\Controllers\PropertiesController::class, 'show'])->name('show')
     ->where(['property' => '[0-9]+','slug' => '[a-z0-9-]+']);
-
+    Route::post('/{property}/contact', [\App\Http\Controllers\PropertiesController::class, 'contact'])->name('contact')
+    ->where(['property' => '[0-9]+']);
 });
 
 Route::get('/dashboard', function () {
@@ -23,7 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('cities', \App\Http\Controllers\Admin\CitiesController::class)->except(['show']); //ici on spécifie qu'on veut toutes les methodes sauf la methode show
     Route::resource('properties', \App\Http\Controllers\Admin\PropertiesController::class)->except(['show']); //ici on spécifie qu'on veut toutes les methodes sauf la methode show
     Route::resource('options', \App\Http\Controllers\Admin\OptionsController::class)->except(['show']); //ici on spécifie qu'on veut toutes les methodes sauf la methode show

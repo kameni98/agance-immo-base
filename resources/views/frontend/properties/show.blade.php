@@ -22,8 +22,9 @@
         @else
             <h4>Intéressé par cette propriété ?</h4>
 
-            <form action="" method="post" class="vstack gap-3">
+            <form action="{{route('properties.contact', ['property' => $property])}}" method="post" class="vstack gap-3">
                 @csrf
+                <input type="hidden" name="property_id" value="{{$property->id}}">
                 <div class="row">
                     @include('shared.forms.input', ['class' => 'col', 'name' => 'firstname', 'label' => 'prénoms'])
                     @include('shared.forms.input', ['class' => 'col', 'name' => 'lastname', 'label' => 'Noms'])

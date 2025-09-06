@@ -28,8 +28,23 @@
                 <li class="nav-item">
                     <a @class(['nav-link', 'active' => str_starts_with($routeName,'properties.')]) href="{{route('properties.index')}}">Propriétés</a>
                 </li>
-
             </ul>
+
+            <div class="ms-auto">
+                @auth
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a @class(['nav-link']) href="{{route('admin.properties.index')}}">Admin</a>
+                        </li>
+                    </ul>
+                @else
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a @class(['nav-link']) href="{{route('login')}}">Connexion</a>
+                        </li>
+                    </ul>
+                @endauth
+            </div>
         </div>
     </div>
 </nav>
