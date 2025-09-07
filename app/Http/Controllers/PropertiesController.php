@@ -55,12 +55,20 @@ class PropertiesController extends Controller
         }catch (\Exception $e){
             $type = "danger";
             $message = 'Une erreur est survenue veuillez vérifie votre formulaire et votre connexion internet.';
-            dd($e->getMessage());
         }
 
         return to_route('properties.show', ['slug' => $property->getSlug(), 'property' => $property->id])->with([
             'message' => $message,
             'type' => $type
+        ]);
+    }
+
+    //methode pour supprimer une propriete coté utilisateur mais comme on utilise le soft delete la propriété sera tjr ds la BDD
+    public function destroy(Property $property){
+        $property->delete();
+        return to_route('properties.index')->with([
+            'message' => 'La propriété <b>'.$property->title.'</b> a été supprimée avec success.',
+            'type' => 'danger'
         ]);
     }
 }

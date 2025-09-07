@@ -11,7 +11,7 @@
         </a>
     </div>
 
-    <table class="table table-striped">
+    <table class="table table-striped" >
         <thead>
             <th>Titre</th>
             <th>Surface</th>
@@ -23,15 +23,18 @@
 
         <tbody>
             @foreach($properties as $property)
-                <tr>
+                {{-- si une propriété a été supprimé dans le frontend on la met au rouge pour signaler à l'admin sa suppression dans le front--}}
+                <tr @class($property->deleted_at !== null ? 'table-danger bg-opacity-10' : '')>
                     <td>{{$property->title}}</td>
                     <td>{{$property->surface}}m²</td>
                     <td>{{number_format($property->price, thousands_separator: ' ')}}</td>
                     <td>{{$property->city->name}}</td>
                     <td>
-                        @foreach($property->options as $option)
+                        @forelse($property->options as $option)
                             <span class="badge text-bg-info">{{$option->name}}</span>
-                        @endforeach
+                        @empty
+                            <span class="badge text-bg-secondary">Aucune</span>
+                        @endforelse
                     </td>
                     <td class="text-end">
                         <div class="d-flex gap-2 w-100 justify-content-end">
@@ -41,9 +44,17 @@
                             <form class="form-delete" action="{{route('admin.properties.destroy', $property)}}" method="post">
                                 @csrf
                                 @method("DELETE")
-                                <input type="hidden" name="property" value="{{$property->title}}">
+                                <input type="hidden" name="title" value="{{$property->title}}"> {{-- cet input nous permet de récupérer le titre dans le javascript--}}
                                 <button type="submit" class="btn btn-danger">Supprimer</button>
                             </form>
+                            @if($property->deleted_at)
+                                <form class="form-restore" action="{{route('admin.properties.restore', $property)}}" method="post">
+                                    @csrf
+                                    @method("PATCH")
+                                    <input type="hidden" name="title" value="{{$property->title}}"> {{-- cet input nous permet de récupérer le titre dans le javascript--}}
+                                    <button type="submit" class="btn btn-success">Restaurer</button>
+                                </form>
+                            @endif
                         </div>
 
                     </td>
@@ -57,14 +68,38 @@
 
 @section('js')
     <script>
-        const elements = document.querySelectorAll('.form-delete');
-        elements.forEach(function(element) {
+        //confirmation de restauration d'une propriété
+        const elementsToRestore = document.querySelectorAll('.form-restore');
+        elementsToRestore.forEach(function(element) {
             element.addEventListener('submit', function(event) {
                 event.preventDefault(); // Prevent default form submission
-                const property = element.elements.property.value
+                const property = element.elements.title.value
 
                 Swal.fire({
-                    title: "Voulez-vous vraiment supprimer le bien : **"+property+"** ?",
+                    title: "Voulez-vous vraiment restaurer le bien : **"+property+"** ?",
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: "Oui",
+                    denyButtonText: `Non`
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        event.target.submit();
+                    }
+                });
+
+            });
+        });
+
+        //confirmation de suppression d'une propriété
+        const elementsToDelete = document.querySelectorAll('.form-delete');
+        elementsToDelete.forEach(function(element) {
+            element.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+                const property = element.elements.title.value
+
+                Swal.fire({
+                    title: "Voulez-vous vraiment supprimer définitivement le bien : **"+property+"** ?",
                     showDenyButton: true,
                     showCancelButton: true,
                     confirmButtonText: "Oui",

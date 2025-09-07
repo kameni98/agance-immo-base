@@ -2,8 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+//
 
 /**
  * @property int $id
@@ -42,7 +48,38 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Property extends Model
 {
-    //
+    use HasFactory; //important si on veut utiliser des seeder
+    /**
+     * Global scope : cas du soft delete
+     * ceci va nous permettre de ne pas supprimer définitivement des champs dans la BDD et pour cela on va ajouter le
+     * champ "deleted_at" à la table relie au model actuel. On peut utiliser ceci dans un système de gestion où il faut
+     * plusieurs signatures avant la suppresion définitive d'un document
+     */
+    use SoftDeletes;
+
+    /**
+     * CAST : il permet de changer le type d'un attribut par exple le sold est un boolean mais renvoi 0 ou 1 on le castant en bool cava
+     * renvoyer un "true" ou "false"
+     */
+    protected function casts(): array
+    {
+        return [
+            'sold' => 'bool'
+        ];
+    }
+
+    /**
+     * Accesseur : get
+     * Mutateur ! set
+     *
+    protected function surface(): Attribute{
+        return Attribute::make(
+            get: fn (?string $value) => $value." m²", //permet de modifier un attribut avant son affichage
+            //set: fn (string $value) => $value." m²" // permet de modifier un attribut avant son enregistrement dans la BDD
+        );
+    }
+    */
+    //champ qu'on peut remplir automatiquement avec la methode create et update
     protected $fillable = ['city_id', 'title', 'address', 'bedrooms', 'floor', 'postal_code', 'description','rooms','price','surface','sold'];
 
     public function city(): \Illuminate\Database\Eloquent\Relations\BelongsTo{
@@ -61,4 +98,17 @@ class Property extends Model
     {
         $this->attributes['sold'] = is_null($value) ? 0 : 1;
     }*/
+
+    /**
+     * SCOPES
+     * /un scope va nous permettre d'utiliser des bouts de requête et pouvoir les utiliser dans plusieurs endroits
+     */
+    //mettons un scope qui permet de sélectionner uniquement les propriétés disponibles
+    public function scopeSolded(Builder $builder, bool $solded = true):Builder{
+        return $builder->where('sold', $solded);
+    }
+
+    public function scopeRecent(Builder $builder):Builder{
+        return $builder->orderBy('created_at', 'desc');
+    }
 }

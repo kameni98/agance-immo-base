@@ -8,7 +8,7 @@
     <h2 class="d-flex justify-content-between align-items-center">
         {{$property->title}} - ({{$property->city->name}}/{{$property->address}})
         <a href="{{route('properties.index')}}" @class('btn btn-danger text-end')>Retour</a></h2>
-    <h3>{{$property->rooms}} pièces - {{$property->surface}} m²</h3>
+    <h3>{{$property->rooms}} pièces - {{$property->surface}}</h3>
 
     <div class="text-primary fw-bold" style="font-size: 4em">
         {{number_format($property->price, thousands_separator: ' ')}} &euro;
@@ -88,10 +88,43 @@
                     @endforeach
                 </ul>
             </div>
+
+            @auth
+                <div class="ms-auto">
+                    <form class="form-delete" action="{{route('properties.destroy', $property)}}" method="post">
+                        @csrf
+                        @method("DELETE")
+                        <input type="hidden" name="title" value="{{$property->title}}">
+                        <button type="submit" class="btn btn-danger">Supprimer cette propriété</button>
+                    </form>
+                </div>
+            @endauth
         </div>
     </div>
 @endsection
 
 @section('js')
+    <script>
+        const elements = document.querySelectorAll('.form-delete');
+        elements.forEach(function(element) {
+            element.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+                const property = element.elements.title.value
 
+                Swal.fire({
+                    title: "Voulez-vous vraiment supprimer le bien : **"+property+"** ?",
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: "Oui",
+                    denyButtonText: `Non`
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        event.target.submit();
+                    }
+                });
+
+            });
+        });
+    </script>
 @endsection

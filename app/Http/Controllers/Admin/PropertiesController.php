@@ -17,7 +17,9 @@ class PropertiesController extends Controller
     public function index()
     {
         return view('admin.properties.index',[
-            'properties' => Property::orderBy('created_at','desc')->paginate(10)
+            //'properties' => Property::orderBy('created_at','desc')->paginate(10)
+            //le scope "withTrashed" nous permet de selectionné les champs supprimés cad ceux dont la valeur 'deleted_at' n'est pas null
+            'properties' => Property::orderBy('created_at','desc')->withTrashed()->paginate(10)
         ]);
     }
 
@@ -94,10 +96,19 @@ class PropertiesController extends Controller
      */
     public function destroy(Property $property)
     {
-        $property->delete();
+        $property->forceDelete();//ici force delete indique à laravel de supprimer complètement la propriété de la BDD
         return to_route('admin.properties.index')->with([
             'message' => 'La propriétée <b>'.$property->title.'</b> a été supprimée avec success.',
             'type' => 'danger'
+        ]);
+    }
+
+    public function restore(Property $property)
+    {
+        $property->restore();
+        return to_route('admin.properties.index')->with([
+            'message' => 'La propriétée <b>'.$property->title.'</b> a été restaurée avec success.',
+            'type' => 'success'
         ]);
     }
 }
